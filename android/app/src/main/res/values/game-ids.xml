@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <!-- app_id -->
+    <string name="app_id" translatable="false">384864979864</string>
+    <!-- package_name -->
+    <string name="package_name" translatable="false">com.segilmez.math_puzzle</string>
+    <!-- achievement math_master -->
+    <string name="achievement_math_master" translatable="false">CgkImJf23ZkLEAIQBQ</string>
+    <!-- leaderboard math_puzzle_addition_leaderboard -->
+    <string name="leaderboard_math_puzzle_addition_leaderboard" translatable="false">CgkImJf23ZkLEAIQAw</string>
+    <!-- leaderboard math_puzzle_multiplication_leaderboard -->
+    <string name="leaderboard_math_puzzle_multiplication_leaderboard" translatable="false">CgkImJf23ZkLEAIQBA</string>
+    <!-- event math_puzzle_addition_achievement -->
+    <string name="event_math_puzzle_addition_achievement" translatable="false">CgkImJf23ZkLEAIQAQ</string>
+    <!-- event math_puzzle_multiplication_achievement -->
+    <string name="event_math_puzzle_multiplication_achievement" translatable="false">CgkImJf23ZkLEAIQAg</string>
+</resources>

@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "219908690211",
+    "firebase_url": "https://math-puzzle-ec41d.firebaseio.com",
+    "project_id": "math-puzzle-ec41d",
+    "storage_bucket": "math-puzzle-ec41d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219908690211:android:b9c1a197b7f99fb0",
+        "android_client_info": {
+          "package_name": "com.segilmez.math_puzzle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219908690211-kag1363l47gh0ve0a0d58890u3e5el6h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.segilmez.math_puzzle",
+            "certificate_hash": "c573f915837cead33f801e0f37eb49b600c47913"
+          }
+        },
+        {
+          "client_id": "219908690211-d0rijpuabbsigvrla9f7tqavluuro82t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkk5A4b8uUmaKCpf-7V9D1a5sbfs5qxmk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219908690211-d0rijpuabbsigvrla9f7tqavluuro82t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-5102346463770175~2100343794"
+    }
+  ],
+  "configuration_version": "1"
+}
