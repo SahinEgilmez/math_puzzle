@@ -20,7 +20,9 @@ class Grid extends StatefulWidget {
   InterstitialAd interstitialAd;
 
   Grid(this.height, this.grid, this.tiles, this.draggedGrid, this.scoreArea, this.targetArea, this.highScoreArea,
-      this.timeRemainer, this.interstitialAd) {}
+      this.timeRemainer, this.interstitialAd) {
+    timer = Timer.periodic(Constants.SECOND, (Timer t) => this.periodicTimer());
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -29,13 +31,14 @@ class Grid extends StatefulWidget {
   }
 
   void periodicTimer() {
-    if (timeRemainer.gameOver && timer != null) {
+    if (timeRemainer.gameOver && timer.isActive && state != null) {
       changeState();
       interstitialAd.show(
         anchorType: AnchorType.bottom,
         anchorOffset: 0.0,
       );
       timer.cancel();
+      timeRemainer.timer.cancel();
     }
   }
 
@@ -64,7 +67,6 @@ class _Grid extends State<Grid> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.timer = Timer.periodic(Constants.SECOND, (Timer t) => widget.periodicTimer());
   }
 
   void changeState(bool gameOver) {

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:math_puzzle/utils/util.dart';
 import 'package:math_puzzle/utils/constants.dart';
 
-
 class TimeRemainer extends StatefulWidget {
   _TimeRemainer state;
   double percent;

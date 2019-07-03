@@ -73,6 +73,7 @@ class _GamePage extends State<GamePage> {
     super.dispose();
     bannerAd.dispose();
   }
+
   void initGrid(double width, double height) {
     grid = Functions.blankGrid();
     tiles.clear();
