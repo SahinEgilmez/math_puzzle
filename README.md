@@ -1,16 +1,18 @@
-# math_puzzle
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)](https://github.com/SahinEgilmez/math_puzzle)
+[![Demo](https://img.shields.io/badge/Download-APK-green)](https://play.google.com/store/apps/details?id=com.segilmez.math_puzzle)
+[![Powered by Flame](https://img.shields.io/badge/Powered%20by-%F0%9F%94%A5-orange.svg)](https://flame-engine.org)
+[![Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue.svg)](https://flutter.dev/)
 
-A Math Puzzle game with Flutter SDK.
+# Math Puzzle Game
+
+Math Puzzle game with Flutter SDK.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+In the game, you have to reach the target number by using either addition or multiplication. You will use neighboring squares to do this. You have limited time to reach results. Therefore, you have to hurry. Also, the higher the score, the harder it will be to find the target number. Go ahead, show your math knowledge!
 
-A few resources to get you started if this is your first Flutter project:
+[![](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=com.segilmez.math_puzzle)
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+## Used Packages:
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Flame - [![pub package](https://img.shields.io/pub/v/flame.svg)](https://pub.dev/packages/flame)
