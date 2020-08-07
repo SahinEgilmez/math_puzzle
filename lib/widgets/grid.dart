@@ -1,72 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:math_puzzle/scenes/game.dart';
+import 'package:math_puzzle/utils/ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:math_puzzle/widgets/tile.dart';
-import 'package:math_puzzle/utils/util.dart';
 import 'package:math_puzzle/widgets/time.dart';
 import 'package:math_puzzle/widgets/area.dart';
-import 'package:math_puzzle/utils/functions.dart';
+import 'package:math_puzzle/utils/engine.dart';
 import 'package:math_puzzle/utils/constants.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 
 class Grid extends StatefulWidget {
-  _Grid state;
-  double height;
-  List<Tile> tiles, draggedGrid;
-  List<List<int>> grid = [];
-  DataArea scoreArea, targetArea, highScoreArea;
-  TimeRemainer timeRemainer;
-  Timer timer;
-  InterstitialAd interstitialAd;
+  final GridState state = GridState();
+  final double height;
+  final List<Tile> tiles, draggedGrid;
+  final List<List<int>> grid;
+  final DataArea scoreArea, targetArea, highScoreArea;
+  final TimeRemainer timeRemainer;
 
-  Grid(this.height, this.grid, this.tiles, this.draggedGrid, this.scoreArea, this.targetArea, this.highScoreArea,
-      this.timeRemainer, this.interstitialAd) {
-    timer = Timer.periodic(Constants.SECOND, (Timer t) => this.periodicTimer());
-  }
+  Grid(this.height, this.grid, this.tiles, this.draggedGrid, this.scoreArea, this.targetArea, this.highScoreArea, this.timeRemainer);
 
   @override
   State<StatefulWidget> createState() {
-    state = _Grid(height, grid, tiles, draggedGrid, scoreArea, targetArea, highScoreArea, timeRemainer);
     return state;
-  }
-
-  void periodicTimer() {
-    if (timeRemainer.gameOver && timer.isActive && state != null) {
-      changeState();
-      interstitialAd.show(
-        anchorType: AnchorType.bottom,
-        anchorOffset: 0.0,
-      );
-      timer.cancel();
-      timeRemainer.timer.cancel();
-    }
-  }
-
-  void changeState() {
-    state.changeState(timeRemainer.gameOver);
   }
 }
 
-class _Grid extends State<Grid> {
-  double height;
+class GridState extends State<Grid> {
   List<Tile> tiles, draggedGrid;
   List<List<int>> grid;
-  DataArea scoreArea, targetArea, highScoreArea;
-  TimeRemainer timeRemainer;
   bool gameOver;
-  static int score = 0, target = 0, highScore = 0;
+  int score = 0, target = 0, highScore = 0;
   SharedPreferences sharedPreferences;
+  Timer timer;
 
-  _Grid(this.height, this.grid, this.tiles, this.draggedGrid, this.scoreArea, this.targetArea, this.highScoreArea,
-      this.timeRemainer) {
-    setHighScoreAndTarget();
-    gameOver = false;
+  GridState() {
+    timer = Timer.periodic(Constants.SECOND, (Timer t) => periodicTimer());
   }
 
   @override
   void initState() {
-    // TODO: implement initState
+    this.grid = widget.grid;
+    this.tiles = widget.tiles;
+    this.draggedGrid = widget.draggedGrid;
+    gameOver = false;
+    setHighScoreAndTarget();
     super.initState();
+  }
+
+  void periodicTimer() {
+    if (widget.timeRemainer.isGameOver() && this.mounted) {
+      print("Grid periodicTimer()");
+      changeState(widget.timeRemainer.isGameOver());
+      Ads.showInterstitialAd();
+      if (this.score > 100) {
+      } else {
+        print("SCORE IS NOT ENOUGH" + this.score.toString());
+      }
+      widget.timeRemainer.timerCancel();
+    }
   }
 
   void changeState(bool gameOver) {
@@ -76,11 +67,10 @@ class _Grid extends State<Grid> {
   }
 
   void setHighScoreAndTarget() async {
-    gameOver = false;
-    target = Functions.targetGenerator(grid, Util.count);
-    targetArea.changeData(target);
+    target = Engine.targetGenerator(grid, Engine.count);
+    widget.targetArea.changeData(target);
     sharedPreferences = await SharedPreferences.getInstance();
-    if (Util.operator == Constants.MULT) {
+    if (Engine.operator == Constants.MULT) {
       highScore = sharedPreferences.getInt('high_score_math_puzzle_multiplication');
       if (highScore == null) {
         highScore = 0;
@@ -91,7 +81,7 @@ class _Grid extends State<Grid> {
           highScore = score;
         }
       }
-    } else if (Util.operator == Constants.PLUS) {
+    } else if (Engine.operator == Constants.PLUS) {
       highScore = sharedPreferences.getInt('high_score_math_puzzle_addition');
       if (highScore == null) {
         highScore = 0;
@@ -103,23 +93,23 @@ class _Grid extends State<Grid> {
         }
       }
     }
-    highScoreArea.changeData(highScore);
+    widget.highScoreArea.changeData(highScore);
   }
 
   void update() {
     int sum;
     List<List<int>> oldPoints = [];
-    if (Util.operator == Constants.PLUS) {
+    if (Engine.operator == Constants.PLUS) {
       sum = 0;
       for (int i = 0; i < draggedGrid.length; i++) {
-        sum += int.parse(draggedGrid[i].number);
+        sum += int.parse(draggedGrid[i].getNumber());
         draggedGrid[i].changeColor(Constants.EMPTY_GRID_COLOR);
         oldPoints.add([draggedGrid[i].x, draggedGrid[i].y]);
       }
-    } else if (Util.operator == Constants.MULT) {
+    } else if (Engine.operator == Constants.MULT) {
       sum = 1;
       for (int i = 0; i < draggedGrid.length; i++) {
-        sum *= int.parse(draggedGrid[i].number);
+        sum *= int.parse(draggedGrid[i].getNumber());
         draggedGrid[i].changeColor(Constants.EMPTY_GRID_COLOR);
         oldPoints.add([draggedGrid[i].x, draggedGrid[i].y]);
       }
@@ -132,22 +122,22 @@ class _Grid extends State<Grid> {
     if (sum == target) {
       for (int i = 0; i < oldPoints.length; i++) {
         int index = (4 * oldPoints[i][0]) + oldPoints[i][1];
-        int newInt = Functions.gridNumGenerator(grid);
+        int newInt = Engine.gridNumGenerator(grid);
         grid[oldPoints[i][0]][oldPoints[i][1]] = newInt;
-        tiles[index].number = newInt.toString();
+        tiles[index].changeNumber(newInt.toString());
       }
       setHighScoreAndTarget();
-      scoreArea.addToData(sum);
-      score = scoreArea.data;
-      timeRemainer.changePercent(1.0);
-      Util.updateLevel(score);
+      widget.scoreArea.addToData(sum);
+      score = widget.scoreArea.getData();
+      widget.timeRemainer.changePercent(1.0);
+      Engine.updateLevel(score);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: this.height,
+      height: widget.height,
       alignment: Alignment.center,
       color: Constants.BACKGROUND_COLOR,
       child: Stack(
@@ -162,8 +152,8 @@ class _Grid extends State<Grid> {
               children: tiles,
             ),
             onPanUpdate: (DragUpdateDetails details) {
-              Tile tile = Functions.draggedGridDetector(tiles, details.globalPosition);
-              if (tile != null && !Functions.isDraggedGrid(draggedGrid, tile)) {
+              Tile tile = Engine.draggedGridDetector(tiles, details.globalPosition);
+              if (tile != null && !Engine.isDraggedGrid(draggedGrid, tile)) {
                 draggedGrid.add(tile);
                 tile.changeColor(Constants.GRID_WIN_COLOR);
               }
@@ -174,7 +164,7 @@ class _Grid extends State<Grid> {
           ),
           gameOver
               ? Container(
-                  height: height,
+                  height: widget.height,
                   color: Constants.BACKGROUND_COLOR,
                   child: Center(
                       child: Column(
@@ -191,6 +181,35 @@ class _Grid extends State<Grid> {
                       Text(
                         '$score',
                         style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Constants.GAME_OVER_COLOR),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          IconButton(
+                            iconSize: 50,
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Constants.GAME_OVER_COLOR,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                            },
+                          ),
+                          IconButton(
+                            iconSize: 50,
+                            icon: Icon(
+                              Icons.refresh,
+                              color: Constants.GAME_OVER_COLOR,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => GameScene(Engine.operator)),
+                              );
+                            },
+                          )
+                        ],
                       )
                     ],
                   )),

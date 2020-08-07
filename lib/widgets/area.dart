@@ -1,38 +1,30 @@
 import 'package:flutter/material.dart';
 
 class DataArea extends StatefulWidget {
-  _DataArea state;
-  int data;
-  String title;
-  Color color;
+  final DataAreaScene state = DataAreaScene();
+  final String title;
+  final Color color;
 
-  DataArea(this.title, this.data,this.color);
+  DataArea(this.title, this.color);
 
   @override
   State<StatefulWidget> createState() {
-    state = _DataArea(title, data,color);
     return state;
   }
 
-  void changeData(data) {
-    this.data = data;
-    state.setData(data);
-  }
+  int getData() => state.data;
 
-  void addToData(data) {
-    this.data += data;
-    state.setData(this.data);
-  }
+  void changeData(int data) => state.update(data);
+
+  void addToData(int data)  => state.update(data + state.data);
 }
 
-class _DataArea extends State<DataArea> {
-  String title;
-  int data;
-  Color color;
+class DataAreaScene extends State<DataArea> {
+  int data = 0;
 
-  _DataArea(this.title, this.data,this.color);
+  DataAreaScene();
 
-  void setData(data) {
+  void update(int data) {
     setState(() {
       this.data = data;
     });
@@ -45,7 +37,7 @@ class _DataArea extends State<DataArea> {
         height: 60.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
-          color: this.color,
+          color: widget.color,
         ),
         child: Padding(
             padding: EdgeInsets.all(0.0),
@@ -53,7 +45,7 @@ class _DataArea extends State<DataArea> {
               Padding(
                 padding: EdgeInsets.all(0),
                 child: Text(
-                  this.title,
+                  widget.title,
                   style: TextStyle(fontSize: 15.0, color: Colors.white70, fontWeight: FontWeight.bold),
                 ),
               ),

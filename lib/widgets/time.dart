@@ -1,47 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:math_puzzle/utils/engine.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'dart:async';
-import 'package:math_puzzle/utils/util.dart';
 import 'package:math_puzzle/utils/constants.dart';
 
 class TimeRemainer extends StatefulWidget {
-  _TimeRemainer state;
-  double percent;
-  bool gameOver;
-  Timer timer;
+  final _TimeRemainerState state = _TimeRemainerState();
 
-  TimeRemainer(double percent) {
-    this.percent = percent;
-    this.gameOver = false;
-    timer = Timer.periodic(Constants.SECOND, (Timer t) => this.periodicTimer());
-  }
+  TimeRemainer(double percentT);
 
   @override
   State<StatefulWidget> createState() {
-    state = _TimeRemainer(percent);
     return state;
   }
 
-  void periodicTimer() {
-    if (percent < Util.period) {
-      gameOver = true;
-    } else {
-      gameOver = false;
-      changePercent(percent - Util.period);
-    }
-  }
+  bool isGameOver() => state.gameOver;
+
+  void timerCancel() => state.timer.cancel();
 
   void changePercent(double percent) {
-    this.percent = percent;
+    percent = percent;
     state.changePercent(percent);
   }
 }
 
-class _TimeRemainer extends State<TimeRemainer> {
+class _TimeRemainerState extends State<TimeRemainer> {
   double timePercent;
+  bool gameOver;
+  Timer timer;
 
-  _TimeRemainer(double time) {
-    timePercent = time;
+  _TimeRemainerState() {
+    timePercent = 1.0;
+    gameOver = false;
+    timer = Timer.periodic(Constants.SECOND, (Timer t) => periodicTimer());
+  }
+
+  void periodicTimer() {
+    if (this.mounted) {
+      if (timePercent < Engine.period) {
+        gameOver = true;
+      } else {
+        gameOver = false;
+        changePercent(timePercent - Engine.period);
+      }
+    }
   }
 
   void changePercent(double percent) {
